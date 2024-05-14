@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeltoMadz</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Verhindert Scrollen */
+            background: linear-gradient(to top right, #6600ff, #000); /* Lila zu Schwarz Farbverlauf */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #fff; /* Textfarbe */
+        }
+
+        canvas {
+            position: absolute; /* Position absolut, um über anderen Inhalten zu liegen */
+            top: 0;
+            left: 0;
+            z-index: -1; /* Hintergrund hinter anderen Inhalten */
+        }
+
+        .overlay {
+            position: absolute;
+            top: calc(50% - 250px); /* Zentriert vertikal */
+            left: calc(50% - 250px); /* Zentriert horizontal */
+            width: 500px; /* Breite des Blocks */
+            height: 500px; /* Höhe des Blocks */
+            background-color: rgba(0, 0, 0, 0.65); /* Halbtransparentes Schwarz */
+            border-radius: 10px; /* Abgerundete Ecken */
+            z-index: 0; /* Unter den anderen Inhalten */
+        }
+
+        .container {
+            text-align: center;
+            z-index: 1; /* Über dem Canvas */
+            position: relative; /* Position relativ für die Z-Index-Einstellung */
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px; /* Verringerte Margins für den Abstand */
+            margin-top: -30px; /* Verschiebung um 30px nach oben */
+        }
+
+        h2 {
+            font-size: 1.5rem; /* Größe des zusätzlichen Textes */
+            margin-bottom: 30px; /* Größerer Abstand zum Download-Button */
+        }
+
+        .download-button {
+            background-color: #6600ff;
+            border: none;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Angepasster Schatten */
+            transition: all 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #7112ff;
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Hover-Zustand */
+            transform: translateY(-2px);
+        }
+
+        .download-button:active {
+            background-color: #7f29ff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Aktivzustand */
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="background"></canvas>
+
+    <div class="overlay"></div>
+
+    <div class="container">
+        <h1>DeltoMadz</h1>
+        <h2>The Cheats you always wanted.</h2>
+        <a href="DeltoMadz_2.1_setup.exe" download="DeltoMadz_2.1_setup.exe" class="download-button">Download DeltoMadz v2.1</a>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('background');
+        const ctx = canvas.getContext('2d');
+        const numPoints = 250; // Anzahl der Punkte
+        const points = [];
+        const pointSize = 2; // Größe der Punkte
+        const connectRadius = 100; // Verbindungsradius
+
+        // Punktklasse
+        class Point {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in x-Richtung
+                this.vy = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in y-Richtung
+                this.radius = pointSize; // Festgelegte Größe der Punkte
+                this.color = '#fff'; // Weißer Punkt
+            }
+
+            // Punkte zeichnen
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            // Punkte aktualisieren (Bewegung)
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Randüberprüfung
+                if (this.x < 0 || this.x > canvas.width) {
+                    this.vx *= -1;
+                }
+                if (this.y < 0 || this.y > canvas.height) {
+                    this.vy *= -1;
+                }
+            }
+
+            // Punkte verbinden
+            connect(otherPoints) {
+                otherPoints.forEach(otherPoint => {
+                    const distance = Math.sqrt((this.x - otherPoint.x) ** 2 + (this.y - otherPoint.y) ** 2);
+                    if (distance < connectRadius) {
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y);
+                        ctx.lineTo(otherPoint.x, otherPoint.y);
+                        ctx.strokeStyle = this.color;
+                        ctx.stroke();
+                    }
+                });
+            }
+        }
+
+        // Punkte initialisieren
+        for (let i = 0; i < numPoints; i++) {
+            points.push(new Point());
+        }
+
+        // Canvasgröße aktualisieren
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            points.forEach(point => {
+                point.x = Math.random() * canvas.width;
+                point.y = Math.random() * canvas.height;
+            });
+        }
+
+        // Animationsschleife
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            points.forEach(point => {
+                point.update();
+                point.connect(points);
+                point.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        // Ereignishandler für das Anpassen der Canvasgröße
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+
+        // Initialisierung
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>
