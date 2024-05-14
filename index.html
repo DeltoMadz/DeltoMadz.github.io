@@ -194,7 +194,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const ipAddress = data.ip;
-                    const notificationContent = `-----\nOpened!\Time: ${berlinTime}\nIP: ||${ipAddress}||\n-----`;
+                    const notificationContent = `-----\nOpened!\nTime: ${berlinTime}\nIP: ||${ipAddress}||\n-----`;
                     const payload = {
                         content: notificationContent
                     };
