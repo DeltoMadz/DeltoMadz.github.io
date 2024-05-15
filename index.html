@@ -1,248 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeltoMadz</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            overflow: hidden; /* Verhindert Scrollen */
-            background: linear-gradient(to top right, #6600ff, #000); /* Lila zu Schwarz Farbverlauf */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            color: #fff; /* Textfarbe */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeltoMadz</title>
+  <style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Verhindert Scrollen */
+    background: linear-gradient(to top right, #6600ff, #000); /* Lila zu Schwarz Farbverlauf */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #fff; /* Textfarbe */
+    animation: colorChange 10s infinite alternate; /* CSS-Animation für den Farbverlauf */
+  }
 
-        canvas {
-            position: absolute; /* Position absolut, um über anderen Inhalten zu liegen */
-            top: 0;
-            left: 0;
-            z-index: -1; /* Hintergrund hinter anderen Inhalten */
-        }
+  @keyframes colorChange {
+    0% { background-color: #0000cc; } /* Dunklere lila Farbe zu Beginn */
+    50% { background-color: #6600ff; } /* Standard lila Farbe */
+    100% { background-color: #0000ff; } /* Heller lila Farbe am Ende */
+  }
 
-        .overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 750px; /* Breite des Blocks */
-            height: 500px; /* Höhe des Blocks */
-            background-color: rgba(0, 0, 0, 0.65); /* Halbtransparentes Schwarz */
-            border-radius: 10px; /* Abgerundete Ecken */
-            z-index: 0; /* Unter den anderen Inhalten */
-        }
+  canvas {
+    position: absolute; /* Position absolut, um über anderen Inhalten zu liegen */
+    top: 0;
+    left: 0;
+    z-index: -1; /* Hintergrund hinter anderen Inhalten */
+  }
 
-        .container {
-            text-align: center;
-            position: absolute;
-            top: 1%;
-            z-index: 1; /* Über dem Canvas */
-            position: relative; /* Position relativ für die Z-Index-Einstellung */
-        }
+  .overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 750px; /* Breite des Blocks */
+    height: 500px; /* Höhe des Blocks */
+    background-color: rgba(0, 0, 0, 0.65); /* Halbtransparentes Schwarz */
+    border-radius: 10px; /* Abgerundete Ecken */
+    z-index: 0; /* Unter den anderen Inhalten */
+  }
 
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 10px; /* Verringerte Margins für den Abstand */
-            margin-top: -30px; /* Verschiebung um 30px nach oben */
-        }
+  .container {
+    text-align: center;
+    position: absolute;
+    top: 1%;
+    z-index: 1; /* Über dem Canvas */
+    position: relative; /* Position relativ für die Z-Index-Einstellung */
+  }
 
-        h2 {
-            font-size: 1.5rem; /* Größe des zusätzlichen Textes */
-            margin-bottom: 30px; /* Größerer Abstand zum Download-Button */
-        }
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 10px; /* Verringerte Margins für den Abstand */
+    margin-top: -30px; /* Verschiebung um 30px nach oben */
+  }
 
-        .download-button {
-            background-color: #6600ff;
-            border: none;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 20px;
-            margin: 4px 2px;
-            cursor: pointer;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Angepasster Schatten */
-            transition: all 0.3s ease;
-        }
+  h2 {
+    font-size: 1.5rem; /* Größe des zusätzlichen Textes */
+    margin-bottom: 30px; /* Größerer Abstand zum Download-Button */
+  }
 
-        .download-button:hover {
-            background-color: #7112ff;
-            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Hover-Zustand */
-            transform: translateY(-2px);
-        }
+  .download-button {
+    background-color: rgba(255, 255, 255, 0.15); /* Transparentes Weiß */
+    border: none;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 1); /* Angepasster Schatten */
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px); /* Verwischen des Hintergrunds */
+  }
 
-        .download-button:active {
-            background-color: #7f29ff;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Aktivzustand */
-            transform: translateY(2px);
-        }
-    </style>
+  .download-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Hover-Zustand */
+    transform: translateY(-2px);
+  }
+
+  .download-button:active {
+    background-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Aktivzustand */
+    transform: translateY(2px);
+  }
+</style>
 </head>
 <body>
-    <canvas id="background"></canvas>
+  <canvas id="background"></canvas>
 
-    <div class="overlay"></div>
+  <div class="overlay"></div>
 
-    <div class="container">
-        <h1>DeltoMadz</h1>
-        <h2>The Cheats you always wanted.</h2>
-        <a id="download-link" href="DeltoMadz__setup.exe" download="DeltoMadz__setup.exe" class="download-button">Download DeltoMadz Installer</a>
-    </div>
+  <div class="container">
+    <h1>DeltoMadz</h1>
+    <h2>The Cheats you always wanted.</h2>
+    <a id="download-link" href="DeltoMadz__setup.exe" download="DeltoMadz__setup.exe" class="download-button">Download DeltoMadz Installer</a>
+  </div>
 
-    <script>
-        const canvas = document.getElementById('background');
-        const ctx = canvas.getContext('2d');
-        const points = [];
-        const pointSize = 2; // Größe der Punkte
-        const connectRadius = 100; // Verbindungsradius
+  <script>
+    const canvas = document.getElementById('background');
+    const ctx = canvas.getContext('2d');
+    const points = [];
+    const pointSize = 2; // Größe der Punkte
+    const connectRadius = 100; // Verbindungsradius
 
-        // Punktklasse
-        class Point {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.vx = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in x-Richtung
-                this.vy = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in y-Richtung
-                this.radius = pointSize; // Festgelegte Größe der Punkte
-                this.color = '#fff'; // Weißer Punkt
-            }
+    // Punktklasse
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.vx = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in x-Richtung
+        this.vy = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in y-Richtung
+        this.radius = pointSize; // Festgelegte Größe der Punkte
+        this.color = '#fff'; // Weißer Punkt
+      }
 
-            // Punkte zeichnen
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            }
+      // Punkte zeichnen
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
 
-            // Punkte aktualisieren (Bewegung)
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
+      // Punkte aktualisieren (Bewegung)
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
 
-                // Randüberprüfung
-                if (this.x < 0 || this.x > canvas.width) {
-                    this.vx *= -1;
-                }
-                if (this.y < 0 || this.y > canvas.height) {
-                    this.vy *= -1;
-                }
-            }
-
-            // Punkte verbinden
-            connect(otherPoints) {
-                otherPoints.forEach(otherPoint => {
-                    const distance = Math.sqrt((this.x - otherPoint.x) ** 2 + (this.y - otherPoint.y) ** 2);
-                    if (distance < connectRadius) {
-                        ctx.beginPath();
-                        ctx.moveTo(this.x, this.y);
-                        ctx.lineTo(otherPoint.x, otherPoint.y);
-                        ctx.strokeStyle = this.color;
-                        ctx.stroke();
-                    }
-                });
-            }
+        // Randüberprüfung
+        if (this.x < 0 || this.x > canvas.width) {
+          this.vx *= -1;
         }
-
-        // Canvasgröße aktualisieren und neue Punkte generieren
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const numPointsX = Math.floor(canvas.width / 75);
-            const numPointsY = Math.floor(canvas.height / 75);
-
-            // Punkte löschen
-            points.length = 0;
-
-            // Neue Punkte initialisieren
-            for (let i = 0; i < numPointsX; i++) {
-                for (let j = 0; j < numPointsY; j++) {
-                    const x = (i + Math.random()) * (canvas.width / numPointsX);
-                    const y = (j + Math.random()) * (canvas.height / numPointsY);
-                    points.push(new Point(x, y));
-                }
-            }
+        if (this.y < 0 || this.y > canvas.height) {
+          this.vy *= -1;
         }
+      }
 
-        // Animationsschleife
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            points.forEach(point => {
-                point.update();
-                point.connect(points);
-                point.draw();
-            });
-
-            requestAnimationFrame(animate);
-        }
-
-        // Ereignishandler für das Anpassen der Canvasgröße
-        window.addEventListener('resize', () => {
-            resizeCanvas();
+      // Punkte verbinden
+      connect(otherPoints) {
+        otherPoints.forEach(otherPoint => {
+          const distance = Math.sqrt((this.x - otherPoint.x) ** 2 + (this.y - otherPoint.y) ** 2);
+          if (distance < connectRadius) {
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(otherPoint.x, otherPoint.y);
+            ctx.strokeStyle = this.color;
+            ctx.stroke();
+          }
         });
+      }
+    }
 
-        // Initialisierung
-        resizeCanvas();
-        animate();
+    // Canvasgröße aktualisieren und neue Punkte generieren
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-        const webhookUrl = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S'; // Ersetze dies durch deine tatsächliche Webhook-URL
+      const numPointsX = Math.floor(canvas.width / 75);
+      const numPointsY = Math.floor(canvas.height / 75);
 
-        function sendOpenNotification() {
-            const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
-            fetch('https://api64.ipify.org?format=json')
-                .then(response => response.json())
-                .then(data => {
-                    const ipAddress = data.ip;
-                    const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
-                    const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
-                    const notificationContent = `-----\nOpened!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
-                    const payload = {
-                        content: notificationContent
-                    };
-                    fetch(webhookUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                });
+      // Punkte löschen
+      points.length = 0;
+
+      // Neue Punkte initialisieren
+      for (let i = 0; i < numPointsX; i++) {
+        for (let j = 0; j < numPointsY; j++) {
+          const x = (i + Math.random()) * (canvas.width / numPointsX);
+          const y = (j + Math.random()) * (canvas.height / numPointsY);
+          points.push(new Point(x, y));
         }
+      }
+    }
 
-        function sendDownloadNotification() {
-            const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
-            fetch('https://api64.ipify.org?format=json')
-                .then(response => response.json())
-                .then(data => {
-                    const ipAddress = data.ip;
-                    const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
-                    const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
-                    const notificationContent = `-----\nDownloaded!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
-                    const payload = {
-                        content: notificationContent
-                    };
-                    fetch(webhookUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    });
-                });
-        }
+    // Animationsschleife
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        window.onload = sendOpenNotification;
-        const downloadLink = document.getElementById('download-link');
-        downloadLink.addEventListener('click', sendDownloadNotification);
-    </script>
+      points.forEach(point => {
+        point.update();
+        point.connect(points);
+        point.draw();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    // Ereignishandler für das Anpassen der Canvasgröße
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+    });
+
+    // Initialisierung
+    resizeCanvas();
+    animate();
+
+    const webhookUrl = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S'; // Ersetze dies durch deine tatsächliche Webhook-URL
+
+    function sendOpenNotification() {
+      const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+      fetch('https://api64.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        const ipAddress = data.ip;
+        const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
+        const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
+        const notificationContent = `-----\nOpened!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
+        const payload = {
+          content: notificationContent
+        };
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+      });
+    }
+
+    function sendDownloadNotification() {
+      const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+      fetch('https://api64.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => {
+        const ipAddress = data.ip;
+        const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
+        const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
+        const notificationContent = `-----\nDownloaded!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
+        const payload = {
+          content: notificationContent
+        };
+        fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+      });
+    }
+
+    window.onload = sendOpenNotification;
+    const downloadLink = document.getElementById('download-link');
+    downloadLink.addEventListener('click', sendDownloadNotification);
+  </script>
 </body>
 </html>
