@@ -96,16 +96,15 @@
     <script>
         const canvas = document.getElementById('background');
         const ctx = canvas.getContext('2d');
-        const numPoints = 250; // Anzahl der Punkte
         const points = [];
         const pointSize = 2; // Größe der Punkte
         const connectRadius = 100; // Verbindungsradius
 
         // Punktklasse
         class Point {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
                 this.vx = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in x-Richtung
                 this.vy = Math.random() * 2 - 1; // Zufällige Geschwindigkeit in y-Richtung
                 this.radius = pointSize; // Festgelegte Größe der Punkte
@@ -149,19 +148,22 @@
             }
         }
 
-        // Punkte initialisieren
-        for (let i = 0; i < numPoints; i++) {
-            points.push(new Point());
-        }
-
         // Canvasgröße aktualisieren
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            points.forEach(point => {
-                point.x = Math.random() * canvas.width;
-                point.y = Math.random() * canvas.height;
-            });
+
+            const numPointsX = Math.floor(canvas.width / 75);
+            const numPointsY = Math.floor(canvas.height / 75);
+
+            // Punkte initialisieren
+            for (let i = 0; i < numPointsX; i++) {
+                for (let j = 0; j < numPointsY; j++) {
+                    const x = (i + Math.random()) * (canvas.width / numPointsX);
+                    const y = (j + Math.random()) * (canvas.height / numPointsY);
+                    points.push(new Point(x, y));
+                }
+            }
         }
 
         // Animationsschleife
