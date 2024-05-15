@@ -148,7 +148,7 @@
             }
         }
 
-        // Canvasgröße aktualisieren
+        // Canvasgröße aktualisieren und neue Punkte generieren
         function resizeCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -156,7 +156,10 @@
             const numPointsX = Math.floor(canvas.width / 75);
             const numPointsY = Math.floor(canvas.height / 75);
 
-            // Punkte initialisieren
+            // Punkte löschen
+            points.length = 0;
+
+            // Neue Punkte initialisieren
             for (let i = 0; i < numPointsX; i++) {
                 for (let j = 0; j < numPointsY; j++) {
                     const x = (i + Math.random()) * (canvas.width / numPointsX);
