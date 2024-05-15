@@ -27,10 +27,11 @@
 
         .overlay {
             position: absolute;
-            top: calc(50% - 250px); /* Zentriert vertikal */
-            left: calc(50% - 250px); /* Zentriert horizontal */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 500px; /* Breite des Blocks */
-            height: 500px; /* Höhe des Blocks */
+            height: 250px; /* Höhe des Blocks */
             background-color: rgba(0, 0, 0, 0.65); /* Halbtransparentes Schwarz */
             border-radius: 10px; /* Abgerundete Ecken */
             z-index: 0; /* Unter den anderen Inhalten */
@@ -38,6 +39,8 @@
 
         .container {
             text-align: center;
+            position: absolute;
+            top: 1%;
             z-index: 1; /* Über dem Canvas */
             position: relative; /* Position relativ für die Z-Index-Einstellung */
         }
