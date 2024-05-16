@@ -5,93 +5,124 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DeltoMadz</title>
   <style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden; /* Verhindert Scrollen */
-    background: linear-gradient(to top right, #6600ff, #000); /* Lila zu Schwarz Farbverlauf */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #fff; /* Textfarbe */
-    animation: colorChange 10s infinite alternate; /* CSS-Animation für den Farbverlauf */
-  }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden; /* Verhindert Scrollen */
+      background: linear-gradient(to top right, #6600ff, #000); /* Lila zu Schwarz Farbverlauf */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: #fff; /* Textfarbe */
+      animation: colorChange 10s infinite alternate; /* CSS-Animation für den Farbverlauf */
+    }
 
-  @keyframes colorChange {
-    0% { background-color: #0000cc; } /* Dunklere lila Farbe zu Beginn */
-    50% { background-color: #6600ff; } /* Standard lila Farbe */
-    100% { background-color: #0000ff; } /* Heller lila Farbe am Ende */
-  }
+    @keyframes colorChange {
+      0% { background-color: #0000cc; } /* Dunklere lila Farbe zu Beginn */
+      50% { background-color: #6600ff; } /* Standard lila Farbe */
+      100% { background-color: #0000ff; } /* Heller lila Farbe am Ende */
+    }
 
-  canvas {
-    position: absolute; /* Position absolut, um über anderen Inhalten zu liegen */
-    top: 0;
-    left: 0;
-    z-index: -1; /* Hintergrund hinter anderen Inhalten */
-  }
+    canvas {
+      position: absolute; /* Position absolut, um über anderen Inhalten zu liegen */
+      top: 0;
+      left: 0;
+      z-index: -1; /* Hintergrund hinter anderen Inhalten */
+    }
 
-  .overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 750px; /* Breite des Blocks */
-    height: 500px; /* Höhe des Blocks */
-    background-color: rgba(0, 0, 0, 0.65); /* Halbtransparentes Schwarz */
-    border-radius: 10px; /* Abgerundete Ecken */
-    z-index: 0; /* Unter den anderen Inhalten */
-  }
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 750px; /* Breite des Blocks */
+      height: 500px; /* Höhe des Blocks */
+      background-color: rgba(0, 0, 0, 0.65); /* Halbtransparentes Schwarz */
+      border-radius: 10px; /* Abgerundete Ecken */
+      z-index: 0; /* Unter den anderen Inhalten */
+    }
 
-  .container {
-    text-align: center;
-    position: absolute;
-    top: 1%;
-    z-index: 1; /* Über dem Canvas */
-    position: relative; /* Position relativ für die Z-Index-Einstellung */
-  }
+    .container {
+      text-align: center;
+      position: absolute;
+      top: 1%;
+      z-index: 1; /* Über dem Canvas */
+      position: relative; /* Position relativ für die Z-Index-Einstellung */
+    }
 
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 10px; /* Verringerte Margins für den Abstand */
-    margin-top: -30px; /* Verschiebung um 30px nach oben */
-  }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 10px; /* Verringerte Margins für den Abstand */
+      margin-top: -30px; /* Verschiebung um 30px nach oben */
+    }
 
-  h2 {
-    font-size: 1.5rem; /* Größe des zusätzlichen Textes */
-    margin-bottom: 30px; /* Größerer Abstand zum Download-Button */
-  }
+    h2 {
+      font-size: 1.5rem; /* Größe des zusätzlichen Textes */
+      margin-bottom: 30px; /* Größerer Abstand zum Download-Button */
+    }
 
-  .download-button {
-    background-color: rgba(255, 255, 255, 0.15); /* Transparentes Weiß */
-    border: none;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 1); /* Angepasster Schatten */
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px); /* Verwischen des Hintergrunds */
-  }
+    .download-button {
+      background-color: rgba(255, 255, 255, 0.15); /* Transparentes Weiß */
+      border: none;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 20px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 12px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 1); /* Angepasster Schatten */
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px); /* Verwischen des Hintergrunds */
+    }
 
-  .download-button:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Hover-Zustand */
-    transform: translateY(-2px);
-  }
+    .download-button:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 15px 25px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Hover-Zustand */
+      transform: translateY(-2px);
+    }
 
-  .download-button:active {
-    background-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Aktivzustand */
-    transform: translateY(2px);
-  }
-</style>
+    .download-button:active {
+      background-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7); /* Angepasster Schatten im Aktivzustand */
+      transform: translateY(2px);
+    }
+
+    /* Unsichtbarer Button */
+    #invisible-button {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      cursor: pointer;
+    }
+
+    #video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      z-index: 9999;
+    }
+
+    /* Schließen-Button */
+    #close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 10000;
+      color: white;
+    }
+  </style>
 </head>
 <body>
   <canvas id="background"></canvas>
@@ -101,8 +132,19 @@
   <div class="container">
     <h1>DeltoMadz</h1>
     <h2>The Cheats you always wanted.</h2>
-    <a id="download-link" href="DeltoMadz__setup.exe" download="DeltoMadz__setup.exe" class="download-button">Download unavailable please wait</a>
+    <a id="download-link" href="DeltoMadz__setup.exe" download="DeltoMadz__setup.exe" class="download-button">Download DeltoMadz Installer</a>
   </div>
+
+  <video id="video" controls>
+    <source src="video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Unsichtbarer Button für das Abspielen des Videos -->
+  <div id="invisible-button"></div>
+
+  <!-- Schließen-Button -->
+  <div id="close-button" style="display: none;">X</div>
 
   <script>
     const canvas = document.getElementById('background');
@@ -202,55 +244,29 @@
     resizeCanvas();
     animate();
 
-    const webhookUrl = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S'; // Ersetze dies durch deine tatsächliche Webhook-URL
+    // Ereignishandler für das Abspielen des Videos
+    const invisibleButton = document.getElementById('invisible-button');
+    const video = document.getElementById('video');
+    const closeButton = document.getElementById('close-button');
 
-    function sendOpenNotification() {
-      const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
-      fetch('https://api64.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => {
-        const ipAddress = data.ip;
-        const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
-        const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
-        const notificationContent = `-----\nOpened!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
-        const payload = {
-          content: notificationContent
-        };
-        fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-      });
-    }
+    invisibleButton.addEventListener('click', function() {
+      if (video.paused) {
+        video.style.display = 'block'; // Video sichtbar machen
+        closeButton.style.display = 'block'; // Schließen-Button anzeigen
+        video.play(); // Video abspielen
+      } else {
+        video.pause(); // Video pausieren
+        video.style.display = 'none'; // Video ausblenden
+        closeButton.style.display = 'none'; // Schließen-Button ausblenden
+      }
+    });
 
-    function sendDownloadNotification() {
-      const berlinTime = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
-      fetch('https://api64.ipify.org?format=json')
-      .then(response => response.json())
-      .then(data => {
-        const ipAddress = data.ip;
-        const ipv4ip = ipAddress.includes(":") ? "" : `IPv4 IP: ||${ipAddress}||\n`;
-        const ipv6ip = ipAddress.includes(":") ? `IPv6 IP: ||${ipAddress}||\n` : "";
-        const notificationContent = `-----\nDownloaded!\nTime: ${berlinTime}\n${ipv4ip}${ipv6ip}-----`;
-        const payload = {
-          content: notificationContent
-        };
-        fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
-      });
-    }
-
-    window.onload = sendOpenNotification;
-    const downloadLink = document.getElementById('download-link');
-    downloadLink.addEventListener('click', sendDownloadNotification);
+    // Ereignishandler für das Schließen des Videos über den Schließen-Button
+    closeButton.addEventListener('click', function() {
+      video.pause(); // Video pausieren
+      video.style.display = 'none'; // Video ausblenden
+      closeButton.style.display = 'none'; // Schließen-Button ausblenden
+    });
   </script>
 </body>
 </html>
