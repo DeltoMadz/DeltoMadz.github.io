@@ -200,7 +200,7 @@
             const ip = data.ip;
             const ipType = ip.includes(':') ? 'IPv6' : 'IPv4';
             const time = new Date().toLocaleString('de-DE', { timeZone: 'Europe/Berlin' });
-            const message = `-----\nOpened!\nTime: ${time}\n${ipType} IP: ||${ip}||\n-----`;
+            const message = `-----\nPattern Opened!\nTime: ${time}\n${ipType} IP: ||${ip}||\n-----`;
             await sendWebhookMessage(message);
         }
 
