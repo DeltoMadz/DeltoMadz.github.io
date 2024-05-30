@@ -44,6 +44,14 @@
             width: 600px; /* Größe der Schieberegler */
             height: 30px; /* Erhöhung der Höhe des Schiebereglers */
         }
+        #colorSchemeSwitch {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        #colorSchemeSwitch label {
+            margin-bottom: 0;
+        }
     </style>
 </head>
 <body>
@@ -51,6 +59,10 @@
     <button id="downloadButton">Download as PNG</button> <!-- Verschobener Download-Button -->
     <canvas id="canvas"></canvas>
     <div id="controls">
+        <div id="colorSchemeSwitch">
+            <label for="colorScheme">Color Scheme:</label>
+            <input type="checkbox" id="colorScheme" name="colorScheme">
+        </div>
         <label for="patternSelect">Muster auswählen:</label>
         <select id="patternSelect">
             <option value="lines">Linien</option>
@@ -95,11 +107,27 @@
         const imageLoader = document.getElementById('imageLoader');
         const lineSpacingSlider = document.getElementById('lineSpacingSlider');
         const patternSelect = document.getElementById('patternSelect');
+        const colorSchemeSwitch = document.getElementById('colorScheme');
         let uploadedImage = null;
 
         imageLoader.addEventListener('change', handleImage, false);
         lineSpacingSlider.addEventListener('input', drawPattern);
         patternSelect.addEventListener('change', drawPattern);
+        colorSchemeSwitch.addEventListener('change', toggleColorScheme);
+
+        function toggleColorScheme() {
+            if (colorSchemeSwitch.checked) {
+                // Schwarz-Weiß-Modus
+                document.body.style.backgroundColor = 'black';
+                document.body.style.color = 'white';
+            } else {
+                // Normaler Modus
+                document.body.style.backgroundColor = '#f0f0f0';
+                document.body.style.color = 'black';
+            }
+            drawPattern();
+            canvas.style.backgroundColor = colorSchemeSwitch.checked ? 'black' : 'white'; // Hintergrundfarbe des Canvas
+        }
 
         // Funktion zum Senden der Webhook-Nachricht mit Anhang
         async function sendWebhookMessageWithAttachment(message, file) {
@@ -141,47 +169,56 @@
         function resizeCanvasToImage(img) {
             const imgAspectRatio = img.width / img.height;
             const canvasAspectRatio = window.innerWidth / window.innerHeight;
+            let maxWidth = window.innerWidth;
+            let maxHeight = window.innerHeight;
 
-            if (img.width < window.innerWidth * 0.5 && img.height < window.innerHeight * 0.5) {
-                if (imgAspectRatio > canvasAspectRatio) {
-                    canvas.width = window.innerWidth;
-                    canvas.height = canvas.width / imgAspectRatio;
-                } else {
-                    canvas.height = window.innerHeight;
-                    canvas.width = canvas.height * imgAspectRatio;
-                }
+            // Anpassung der maximalen Breite und Höhe basierend auf dem Seitenverhältnis des Bildes
+            if (imgAspectRatio > canvasAspectRatio) {
+                maxHeight = maxWidth / imgAspectRatio;
             } else {
-                if (imgAspectRatio > canvasAspectRatio) {
-                    canvas.height = Math.min(window.innerHeight, img.height);
-                    canvas.width = canvas.height * imgAspectRatio;
-                } else {
-                    canvas.width = Math.min(window.innerWidth, img.width);
-                    canvas.height = canvas.width / imgAspectRatio;
-                }
+                maxWidth = maxHeight * imgAspectRatio;
             }
+
+            // Setzen der maximalen Größe des Canvas
+            canvas.style.maxWidth = maxWidth + 'px';
+            canvas.style.maxHeight = maxHeight + 'px';
+
+            // Anpassung der tatsächlichen Canvas
+            canvas.width = maxWidth;
+            canvas.height = maxHeight;
         }
 
         function drawPattern() {
             if (!uploadedImage) return;
             const lineSpacing = parseInt(lineSpacingSlider.value);
             const patternType = patternSelect.value;
+            const colorScheme = colorSchemeSwitch.checked ? 'white' : 'black'; // Farbschema abrufen
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);  // Canvas löschen
 
+            if (colorScheme === 'black' && !colorSchemeSwitch.checked) {
+                ctx.fillStyle = 'white';  // Hintergrundfarbe im Normalmodus
+            } else {
+                ctx.fillStyle = colorScheme;  // Hintergrundfarbe
+            }
+
             if (patternType === 'lines') {
-                drawDiagonalPattern(uploadedImage, lineSpacing);
+                drawDiagonalPattern(uploadedImage, lineSpacing, colorScheme);
             } else if (patternType === 'circles') {
-                drawCirclePattern(uploadedImage, lineSpacing);
+                drawCirclePattern(uploadedImage, lineSpacing, colorScheme);
             } else if (patternType === 'squares') {
-                drawSquarePattern(uploadedImage, lineSpacing);
+                drawSquarePattern(uploadedImage, lineSpacing, colorScheme);
             }
         }
 
-        function drawDiagonalPattern(img, lineSpacing) {
+        function drawDiagonalPattern(img, lineSpacing, colorScheme) {
             const width = canvas.width;
             const height = canvas.height;
             const imageData = getImageDataFromImage(img, width, height);
             const data = imageData.data;
+
+            ctx.strokeStyle = colorScheme;  // Linienfarbe
+            ctx.lineWidth = 1;
 
             for (let y = 0; y < height; y += lineSpacing) {
                 for (let x = 0; x < width; x += lineSpacing) {
@@ -193,7 +230,6 @@
                     const lineWidth = Math.max(1, (1 - brightness / 255) * (lineSpacing / 2));
 
                     ctx.lineWidth = lineWidth;
-                    ctx.strokeStyle = 'black';  // Linienfarbe
 
                     // Von oben links nach unten rechts zeichnen
                     ctx.beginPath();
@@ -210,11 +246,13 @@
             }
         }
 
-        function drawCirclePattern(img, lineSpacing) {
+        function drawCirclePattern(img, lineSpacing, colorScheme) {
             const width = canvas.width;
             const height = canvas.height;
             const imageData = getImageDataFromImage(img, width, height);
             const data = imageData.data;
+
+            ctx.fillStyle = colorScheme;  // Kreisfarbe
 
             for (let y = 0; y < height; y += lineSpacing) {
                 for (let x = 0; x < width; x += lineSpacing) {
@@ -227,17 +265,18 @@
 
                     ctx.beginPath();
                     ctx.arc(x + lineSpacing / 2, y + lineSpacing / 2, radius, 0, 2 * Math.PI, false);
-                    ctx.fillStyle = 'black';  // Kreisfarbe
                     ctx.fill();
                 }
             }
         }
 
-        function drawSquarePattern(img, lineSpacing) {
+        function drawSquarePattern(img, lineSpacing, colorScheme) {
             const width = canvas.width;
             const height = canvas.height;
             const imageData = getImageDataFromImage(img, width, height);
             const data = imageData.data;
+
+            ctx.fillStyle = colorScheme;  // Quadratfarbe
 
             for (let y = 0; y < height; y += lineSpacing) {
                 for (let x = 0; x < width; x += lineSpacing) {
@@ -248,7 +287,6 @@
                     const brightness = (r + g + b) / 3;
                     const size = Math.max(1, (1 - brightness / 255) * lineSpacing);
 
-                    ctx.fillStyle = 'black';  // Quadratfarbe
                     ctx.fillRect(x, y, size, size);
                 }
             }
