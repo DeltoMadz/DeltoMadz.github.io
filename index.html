@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+      window.onload = function() {
+          // Überprüfe, ob die URL /pattern enthält
+          if (window.location.pathname.endsWith('/pattern')) {
+              // Leite auf pattern.html um
+              window.location.href = 'pattern.html';
+          }
+      };
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DeltoMadz</title>
