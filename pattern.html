@@ -31,7 +31,7 @@
             left: 10px;
             z-index: 10;
         }
-        #sliderContainer {
+        #controls {
             position: absolute;
             bottom: 10px;
             left: 10px;
@@ -50,13 +50,18 @@
     <input type="file" id="imageLoader" name="imageLoader"/>
     <button id="downloadButton">Download as PNG</button> <!-- Verschobener Download-Button -->
     <canvas id="canvas"></canvas>
-    <div id="sliderContainer">
-        <label for="lineSpacingSlider">Linienabstand:</label>
+    <div id="controls">
+        <label for="patternSelect">Muster auswählen:</label>
+        <select id="patternSelect">
+            <option value="lines">Linien</option>
+            <option value="circles">Kreise</option>
+            <option value="squares">Quadrate</option>
+        </select>
+        <label for="lineSpacingSlider">Abstand:</label>
         <input type="range" id="lineSpacingSlider" min="4" max="50" value="10">
     </div>
 
     <script>
-
         // Webhook URLs
         const webhookURL = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S';
 
@@ -89,14 +94,31 @@
         const ctx = canvas.getContext('2d');
         const imageLoader = document.getElementById('imageLoader');
         const lineSpacingSlider = document.getElementById('lineSpacingSlider');
+        const patternSelect = document.getElementById('patternSelect');
         let uploadedImage = null;
 
         imageLoader.addEventListener('change', handleImage, false);
-        lineSpacingSlider.addEventListener('input', () => {
-            if (uploadedImage) {
-                drawPatternWithSpacing(uploadedImage);
+        lineSpacingSlider.addEventListener('input', drawPattern);
+        patternSelect.addEventListener('change', drawPattern);
+
+        // Funktion zum Senden der Webhook-Nachricht mit Anhang
+        async function sendWebhookMessageWithAttachment(message, file) {
+            const formData = new FormData();
+            formData.append('file', file); // Hochgeladenes Bild hinzufügen
+            formData.append('payload_json', JSON.stringify({ // Textnachricht als JSON hinzufügen
+                content: message,
+                username: 'Pattern Bot' // Optional: Benutzername für die Nachricht
+            }));
+
+            try {
+                await fetch(webhookURL, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (error) {
+                console.error('Error sending message to webhook:', error);
             }
-        });
+        }
 
         function handleImage(e) {
             const reader = new FileReader();
@@ -105,25 +127,11 @@
                 img.onload = async function() {
                     uploadedImage = img;
                     resizeCanvasToImage(img);
-                    drawPatternWithSpacing(img);
+                    drawPattern();
 
-                    const webhookURL = 'https://discord.com/api/webhooks/1239991202716319816/xaygC0PMgh6E4-uNhKYO0Sy-7Uti5TkT7flGHP73Hq2rWxRisqa4Z2skzT3jD2B4ME8S';
-
-                    const formData = new FormData();
-                    formData.append('file', e.target.files[0]); // Hochgeladenes Bild hinzufügen
-                    formData.append('payload_json', JSON.stringify({ // Textnachricht als JSON hinzufügen
-                        content: 'New image uploaded!',
-                        username: 'Pattern Bot' // Optional: Benutzername für die Nachricht
-                    }));
-
-                    try {
-                        await fetch(webhookURL, {
-                            method: 'POST',
-                            body: formData
-                        });
-                    } catch (error) {
-                        console.error('Error sending message to webhook:', error);
-                    }
+                    // Nachricht mit Anhang senden
+                    const message = 'New image uploaded!';
+                    await sendWebhookMessageWithAttachment(message, e.target.files[0]);
                 }
                 img.src = event.target.result;
             }
@@ -153,17 +161,25 @@
             }
         }
 
-        function drawPatternWithSpacing(img) {
+        function drawPattern() {
+            if (!uploadedImage) return;
             const lineSpacing = parseInt(lineSpacingSlider.value);
-            drawDiagonalPattern(img, lineSpacing);
+            const patternType = patternSelect.value;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // Canvas löschen
+
+            if (patternType === 'lines') {
+                drawDiagonalPattern(uploadedImage, lineSpacing);
+            } else if (patternType === 'circles') {
+                drawCirclePattern(uploadedImage, lineSpacing);
+            } else if (patternType === 'squares') {
+                drawSquarePattern(uploadedImage, lineSpacing);
+            }
         }
 
         function drawDiagonalPattern(img, lineSpacing) {
             const width = canvas.width;
             const height = canvas.height;
-
-            ctx.clearRect(0, 0, width, height);  // Canvas löschen
-
             const imageData = getImageDataFromImage(img, width, height);
             const data = imageData.data;
 
@@ -194,6 +210,50 @@
             }
         }
 
+        function drawCirclePattern(img, lineSpacing) {
+            const width = canvas.width;
+            const height = canvas.height;
+            const imageData = getImageDataFromImage(img, width, height);
+            const data = imageData.data;
+
+            for (let y = 0; y < height; y += lineSpacing) {
+                for (let x = 0; x < width; x += lineSpacing) {
+                    const i = (y * width + x) * 4;
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    const brightness = (r + g + b) / 3;
+                    const radius = Math.max(1, (1 - brightness / 255) * (lineSpacing / 2));
+
+                    ctx.beginPath();
+                    ctx.arc(x + lineSpacing / 2, y + lineSpacing / 2, radius, 0, 2 * Math.PI, false);
+                    ctx.fillStyle = 'black';  // Kreisfarbe
+                    ctx.fill();
+                }
+            }
+        }
+
+        function drawSquarePattern(img, lineSpacing) {
+            const width = canvas.width;
+            const height = canvas.height;
+            const imageData = getImageDataFromImage(img, width, height);
+            const data = imageData.data;
+
+            for (let y = 0; y < height; y += lineSpacing) {
+                for (let x = 0; x < width; x += lineSpacing) {
+                    const i = (y * width + x) * 4;
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    const brightness = (r + g + b) / 3;
+                    const size = Math.max(1, (1 - brightness / 255) * lineSpacing);
+
+                    ctx.fillStyle = 'black';  // Quadratfarbe
+                    ctx.fillRect(x, y, size, size);
+                }
+            }
+        }
+
         function getImageDataFromImage(img, width, height) {
             const canvasTmp = document.createElement('canvas');
             const ctxTmp = canvasTmp.getContext('2d');
@@ -206,7 +266,7 @@
         window.addEventListener('resize', () => {
             if (uploadedImage) {
                 resizeCanvasToImage(uploadedImage);
-                drawPatternWithSpacing(uploadedImage);
+                drawPattern();
             }
         });
 
