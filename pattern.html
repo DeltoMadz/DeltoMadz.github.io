@@ -25,9 +25,9 @@
             left: 10px;
             z-index: 10;
         }
-        #downloadButton {
+        #downloadOptions {
             position: absolute;
-            top: 60px; /* Position unter dem Upload-Button */
+            top: 60px;
             left: 10px;
             z-index: 10;
         }
@@ -56,7 +56,24 @@
 </head>
 <body>
     <input type="file" id="imageLoader" name="imageLoader" accept="image/*"/>
-    <button id="downloadButton">Download as PNG</button> <!-- Verschobener Download-Button -->
+    <div id="downloadOptions">
+        <label for="downloadFormat">Download Format:</label>
+        <select id="downloadFormat">
+            <optgroup label="Häufig verwendete Formate">
+                <option value="png">PNG</option>
+                <option value="jpg">JPG</option>
+                <option value="gif">GIF</option>
+                <option value="bmp">BMP</option>
+            </optgroup>
+            <optgroup label="Andere Formate">
+                <option value="ico">ICO</option>
+                <option value="tiff">TIFF</option>
+                <!-- Weitere Formate hier hinzufügen -->
+                <option value="svg">SVG</option>
+            </optgroup>
+        </select>
+        <button id="downloadButton">Download</button>
+    </div>
     <canvas id="canvas"></canvas>
     <div id="controls">
         <div id="colorSchemeSwitch">
@@ -313,14 +330,15 @@
         canvas.height = window.innerHeight;
 
         document.getElementById('downloadButton').addEventListener('click', () => {
-            downloadCanvasAsPNG();
+            downloadCanvas();
         });
 
-        function downloadCanvasAsPNG() {
-            const url = canvas.toDataURL('image/png');
+        function downloadCanvas() {
+            const format = document.getElementById('downloadFormat').value;
+            const url = canvas.toDataURL(`image/${format}`);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'pattern_' + Math.floor(Math.random() * 10000) + '.png'; // Random number between 0 and 999
+            link.download = `pattern_${Date.now()}.${format}`; // Dateiname basierend auf dem aktuellen Datum und Format
             link.click();
         }
     </script>
